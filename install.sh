@@ -159,6 +159,11 @@ echo "Installing dependencies (adb, curl, jq, termux-api)..."
 pkg install -y android-tools curl jq termux-api bc >/dev/null 2>&1
 echo "✅ Environment ready."
 
+# 1b. Request Storage Permission
+echo -e "\n${BLUE}1b. Requesting storage permission...${NC}"
+termux-setup-storage
+echo "✅ Storage setup requested (please accept if prompted)."
+
 # 2. Explain Manual Steps
 echo -e "\n${BLUE}2. Important Manual Steps Required:${NC}"
 echo -e "${YELLOW}   - You must enable 'Wireless debugging' in Android Developer Options.${NC}"
@@ -456,16 +461,23 @@ while true; do
         echo "[\$(date)] Starting single keep-alive process..."
         adb -s "$ADB_SERVER" shell "nohup sh $ADB_KEEPALIVE_SCRIPT_PATH > /dev/null 2>&1 &"
     fi
+    # Monitor GPS script
+    if ! pgrep -f "$BOOT_GPS_SCRIPT_NAME" > /dev/null; then
+        echo "[\$(date)] GPS script not running. Starting it..."
+        nohup "$BOOT_GPS_SCRIPT_PATH" >> "$INSTALL_DIR/gps.log" 2>&1 &
+    fi
+
     sleep 60
 done
 BOOT_EOF
-chmod +x "$BOOT_SCRIPT_PATH"
+chmod 755 "$BOOT_SCRIPT_PATH"
 echo "✅ Termux:Boot orchestrator script created."
 
 # 10a. Create Termux:Boot GPS Script
 echo -e "\n${BLUE}10a. Creating Termux:Boot GPS script...${NC}"
 cat > "$BOOT_GPS_SCRIPT_PATH" << 'BOOT_GPS_EOF'
 #!/data/data/com.termux/files/usr/bin/bash
+termux-wake-lock
 
 # --- CONFIG -----------------------------------------------------
 
@@ -566,7 +578,7 @@ while true; do
         sleep $INTERVAL
 done
 BOOT_GPS_EOF
-chmod +x "$BOOT_GPS_SCRIPT_PATH"
+chmod 755 "$BOOT_GPS_SCRIPT_PATH"
 echo "✅ Termux:Boot GPS script created."
 
 # 10b. Ensure .bashrc autostart entries
@@ -597,9 +609,9 @@ fi
 
 # 11. Start the services
 echo -e "\n${BLUE}11. Starting the services...${NC}"
-nohup sh "$BOOT_SCRIPT_PATH" > /dev/null 2>&1 &
+nohup "$BOOT_SCRIPT_PATH" > /dev/null 2>&1 &
 ORCHESTRATOR_PID=$!
-nohup sh "$BOOT_GPS_SCRIPT_PATH" > /dev/null 2>&1 &
+nohup "$BOOT_GPS_SCRIPT_PATH" >> "$INSTALL_DIR/gps.log" 2>&1 &
 GPS_PID=$!
 
 # Wait a moment and verify the services started
