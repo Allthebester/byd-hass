@@ -35,9 +35,27 @@ type MonitoredSensor struct {
 // would waste bandwidth and CPU on the head-unit.
 // loadMonitoredSensorsFromEnv overrides the default MonitoredSensors
 
-// Default monitors – expanded version
+// Default monitors
 var defaultMonitoredSensors = []MonitoredSensor{
-	/* 1‑12 ---------------------------------------------------- */
+	{ID: 33, Publish: true}, // BatteryPercentage
+	{ID: 34, Publish: true}, // FuelPercentage
+	{ID: 2, Publish: true},  // Speed
+	{ID: 3, Publish: true},  // Mileage
+	{ID: 53, Publish: true}, // LF tire
+	{ID: 54, Publish: true}, // RF tire
+	{ID: 55, Publish: true}, // LR tire
+	{ID: 56, Publish: true}, // RR tire
+	{ID: 10, Publish: true}, // EnginePower
+	{ID: 26, Publish: true}, // OutsideTemp
+	{ID: 25, Publish: true}, // CabinTemp
+
+	// Internal-only
+	{ID: 12, Publish: false},
+}
+
+// Default monitors – expanded version
+/* var defaultMonitoredSensors = []MonitoredSensor{
+	// 1‑12 ----------------------------------------------------
 	{ID: 1, Publish: true},   // PowerStatus
 	{ID: 2, Publish: true},   // Speed
 	{ID: 3, Publish: true},   // Mileage
@@ -51,7 +69,7 @@ var defaultMonitoredSensors = []MonitoredSensor{
 	{ID: 11, Publish: true},  // FrontMotorTorque
 	{ID: 12, Publish: false}, // ChargeGunState (internal‑only)
 
-	/*	{ID: 12, Publish: true}, // ChargeGunState
+	//	{ID: 12, Publish: true}, // ChargeGunState
 
 	// 13‑22 --------------------------------------------------- 
 	{ID: 13, Publish: true}, // PowerConsumption100KM
@@ -187,8 +205,8 @@ var defaultMonitoredSensors = []MonitoredSensor{
 	{ID: 2004, Publish: true}, // LastSentryTriggerImage
 	{ID: 2005, Publish: true}, // LastVideoStartTime
 	{ID: 2006, Publish: true}, // LastVideoEndTime
-	{ID: 2007, Publish: true}, // LastVideoPath. */
-}
+	{ID: 2007, Publish: true}, // LastVideoPath.
+} */
 
 // Global value initialized at startup
 var MonitoredSensors = loadMonitoredSensorsFromEnv()
