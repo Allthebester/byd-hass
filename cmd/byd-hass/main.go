@@ -11,12 +11,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/jkaberg/byd-hass/internal/api"
-	"github.com/jkaberg/byd-hass/internal/app"
-	"github.com/jkaberg/byd-hass/internal/config"
-	"github.com/jkaberg/byd-hass/internal/location"
-	"github.com/jkaberg/byd-hass/internal/mqtt"
-	"github.com/jkaberg/byd-hass/internal/transmission"
+	"github.com/Allthebester/byd-hass/internal/api"
+	"github.com/Allthebester/byd-hass/internal/app"
+	"github.com/Allthebester/byd-hass/internal/config"
+	"github.com/Allthebester/byd-hass/internal/location"
+	"github.com/Allthebester/byd-hass/internal/mqtt"
+	"github.com/Allthebester/byd-hass/internal/transmission"
 	"github.com/sirupsen/logrus"
 )
 
