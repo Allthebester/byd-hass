@@ -2,7 +2,7 @@ package sensors
 
 import (
 	"time"
-	"github.com/jkaberg/byd-hass/internal/location"
+	"github.com/Allthebester/byd-hass/internal/location"
 )
 
 // SensorData struct to hold all possible sensor values.
