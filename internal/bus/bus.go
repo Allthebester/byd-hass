@@ -3,7 +3,7 @@ package bus
 import (
 	"sync"
 
-	"github.com/jkaberg/byd-hass/internal/sensors"
+	"github.com/Allthebester/byd-hass/internal/sensors"
 )
 
 // Bus provides fan-out pub/sub semantics for *sensors.SensorData* messages.

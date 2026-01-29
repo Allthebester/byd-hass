@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jkaberg/byd-hass/internal/mqtt"
-	"github.com/jkaberg/byd-hass/internal/sensors"
+	"github.com/Allthebester/byd-hass/internal/mqtt"
+	"github.com/Allthebester/byd-hass/internal/sensors"
 	"github.com/sirupsen/logrus"
 )
 

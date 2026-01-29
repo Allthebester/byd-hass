@@ -1,6 +1,6 @@
 package transmission
 
-import "github.com/jkaberg/byd-hass/internal/sensors"
+import "github.com/Allthebester/byd-hass/internal/sensors"
 
 // Transmitter defines the interface for transmitting sensor data
 type Transmitter interface {

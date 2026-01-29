@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"time"
 
-	"github.com/jkaberg/byd-hass/internal/sensors"
+	"github.com/Allthebester/byd-hass/internal/sensors"
 	"github.com/sirupsen/logrus"
 )
 

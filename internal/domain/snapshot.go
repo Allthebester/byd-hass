@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/jkaberg/byd-hass/internal/sensors"
+	"github.com/Allthebester/byd-hass/internal/sensors"
 )
 
 // Changed returns true if *cur* differs from *prev* beyond tolerated jitter.
