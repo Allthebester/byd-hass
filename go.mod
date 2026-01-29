@@ -1,4 +1,4 @@
-module github.com/jkaberg/byd-hass
+module github.com/Allthebester/byd-hass
 
 go 1.21
 
