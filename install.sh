@@ -46,7 +46,7 @@ ADB_LOG_FILE="$SHARED_DIR/keep-alive.log"
 ADB_SERVER="localhost:5555"
 
 # GitHub repo details
-REPO="jkaberg/byd-hass"
+REPO="Allthebester/byd-hass"
 ASSET_NAME="byd-hass-arm64"
 RELEASES_API="https://api.github.com/repos/$REPO/releases/latest"
 
