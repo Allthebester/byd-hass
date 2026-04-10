@@ -100,12 +100,12 @@ type SensorData struct {
 	// --- Driving Assistance & Safety ---
 	ACCCruiseStatus       *float64 `json:"acc_cruise_status,omitempty"`
 	LaneKeepAssistStatus  *float64 `json:"lane_keep_assist_status,omitempty"`
-	DriverSeatbelt        *float64 `json:"driver_seatbelt,omitempty"`
+	DriverSeatBeltStatus        *float64 `json:"driver_seatbelt,omitempty"`
 	PassengerSeatbeltWarn *float64 `json:"passenger_seatbelt_warn,omitempty"`
 	Row2LeftSeatbelt      *float64 `json:"row2_left_seatbelt,omitempty"`
 	Row2RightSeatbelt     *float64 `json:"row2_right_seatbelt,omitempty"`
 	Row2CenterSeatbelt    *float64 `json:"row2_center_seatbelt,omitempty"`
-	DistanceToCarAhead    *float64 `json:"distance_to_car_ahead,omitempty"`
+	DistanceToVehicleAhead    *float64 `json:"distance_to_car_ahead,omitempty"`
 	LaneCurvature         *float64 `json:"lane_curvature,omitempty"`
 	RightLineDistance     *float64 `json:"right_line_distance,omitempty"`
 	LeftLineDistance      *float64 `json:"left_line_distance,omitempty"`
@@ -176,14 +176,14 @@ type SensorDefinition struct {
 // Assistant).  Each row provides the metadata needed to build the Diplus query
 // template, scale raw values, and publish Home-Assistant discovery messages.
 //
-//    ID            – Stable numerical identifier (starts at 1, never reused)
-//    FieldName     – _Exact_ Go struct field in SensorData (PascalCase)
-//    ChineseName   – The precise label Diplus uses in its JSON output
-//    EnglishName   – Clear English label for UIs / logs
-//    Category      – "sensor" or "binary_sensor" (matches HA platform)
-//    DeviceClass   – Optional Home-Assistant device_class (speed, voltage, …)
-//    Unit          – Unit of measurement (km/h, °C, %, …) – empty if unit-less
-//    ScaleFactor   – Multiply raw value by this to obtain the real value (1 = none)
+//	ID            – Stable numerical identifier (starts at 1, never reused)
+//	FieldName     – _Exact_ Go struct field in SensorData (PascalCase)
+//	ChineseName   – The precise label Diplus uses in its JSON output
+//	EnglishName   – Clear English label for UIs / logs
+//	Category      – "sensor" or "binary_sensor" (matches HA platform)
+//	DeviceClass   – Optional Home-Assistant device_class (speed, voltage, …)
+//	Unit          – Unit of measurement (km/h, °C, %, …) – empty if unit-less
+//	ScaleFactor   – Multiply raw value by this to obtain the real value (1 = none)
 //
 // Whenever you add / remove a field in SensorData **make sure** to update this
 // slice accordingly; build failures will warn you if you forget.
@@ -194,14 +194,14 @@ var AllSensors = []SensorDefinition{
 	{3, "Mileage", "里程", "Mileage", "sensor", "distance", "km", 0.1},
 	{4, "GearPosition", "档位", "Gear Position", "sensor", "", "", 1},
 	{5, "EngineRPM", "发动机转速", "Engine RPM", "sensor", "", "rpm", 1},
-	{6, "BrakeDepth", "刹车深度", "Brake Pedal Depth", "sensor", "", "%", 1},
-	{7, "AcceleratorDepth", "加速踏板深度", "Accelerator Pedal Depth", "sensor", "", "%", 1},
+	{6, "BrakeDepth", "刹车深度", "Brake Pedal Depth", "sensor", "", "%", 1}, // Was BrakePedalDepth
+	{7, "AcceleratorDepth", "加速踏板深度", "Accelerator Pedal Depth", "sensor", "", "%", 1}, // Was AcceleratorPedalDepth
 	{8, "FrontMotorRPM", "前电机转速", "Front Motor RPM", "sensor", "", "rpm", 1},
 	{9, "RearMotorRPM", "后电机转速", "Rear Motor RPM", "sensor", "", "rpm", 1},
 	{10, "EnginePower", "发动机功率", "Engine Power", "sensor", "power", "kW", 1},
 	{11, "FrontMotorTorque", "前电机扭矩", "Front Motor Torque", "sensor", "", "Nm", 1},
 	{12, "ChargeGunState", "充电枪插枪状态", "Charge Gun State", "binary_sensor", "plug", "", 1},
-	{13, "PowerConsumption100km", "百公里电耗", "Power consumption per 100 kilometers", "sensor", "", "kWh/100km", 1},
+	{13, "PowerConsumption100km", "百公里电耗", "Power consumption per 100 kilometers", "sensor", "", "kWh/100km", 1}, // Fixed case: PowerConsumption100KM -> PowerConsumption100km
 	{14, "MaxBatteryTemp", "最高电池温度", "Maximum Battery Temperature", "sensor", "temperature", "°C", 1},
 	{15, "AvgBatteryTemp", "平均电池温度", "Average Battery Temperature", "sensor", "temperature", "°C", 1},
 	{16, "MinBatteryTemp", "最低电池温度", "Minimum Battery Temperature", "sensor", "temperature", "°C", 1},
@@ -209,36 +209,36 @@ var AllSensors = []SensorDefinition{
 	{18, "MinBatteryVoltage", "最低电池电压", "Minimum Battery Voltage", "sensor", "voltage", "V", 1},
 	{19, "LastWiperTime", "上次雨刮时间", "Last Wiper Time", "sensor", "", "", 1},
 	{20, "Weather", "天气", "Weather", "sensor", "", "", 1},
-	{21, "DriverSeatbelt", "主驾驶安全带状态", "Driver Seatbelt Status", "sensor", "", "", 1},
+	{21, "DriverSeatBeltStatus", "主驾驶安全带状态", "Driver's seat belt status", "sensor", "", "", 1},
 	{22, "RemoteLockStatus", "远程锁车状态", "Remote Lock Status", "sensor", "", "", 1},
 	// what is ID 23 and 24? not documeneted in the spec.
-	{25, "CabinTemperature", "车内温度", "Cabin Temperature", "sensor", "temperature", "°C", 1},
+	{25, "CabinTemperature", "车内温度", "Cabin Temperature", "sensor", "", "°C", 1},
 	{26, "OutsideTemperature", "车外温度", "Outside Temperature", "sensor", "temperature", "°C", 1},
-	{27, "DriverACTemperature", "主驾驶空调温度", "Driver AC temperature", "sensor", "temperature", "°C", 1},
+	{27, "DriverACTemperature", "主驾驶空调温度", "Driver AC temperature", "sensor", "temperature", "°C", 1}, // Was DriverACTemp
 	{28, "TemperatureUnit", "温度单位", "Temperature unit", "sensor", "", "", 1},
 	{29, "BatteryCapacity", "电池容量", "Battery Capacity", "sensor", "energy_storage", "kWh", 1}, // seems to be 0 all the time?
-	{30, "SteeringAngle", "方向盘转角", "Steering Angle", "sensor", "", "°", 1},
-	{31, "SteeringRotationSpeed", "方向盘转速", "Steering Rotation Speed", "sensor", "", "°/s", 1},
+	{30, "SteeringAngle", "方向盘转角", "Steering Wheel Angle", "sensor", "", "°", 1}, // Was SteeringWheelAngle
+	{31, "SteeringRotationSpeed", "方向盘转速", "Steering Wheel Speed", "sensor", "", "rpm", 1}, // Was SteeringWheelSpeed
 	{32, "TotalPowerConsumption", "总电耗", "Total Power Consumption", "sensor", "energy", "kWh", 1},
 	{33, "BatteryPercentage", "电量百分比", "Battery Percentage", "sensor", "battery", "%", 1},
 	{34, "FuelPercentage", "油量百分比", "Fuel Percentage", "sensor", "battery", "%", 1},
 	{35, "TotalFuelConsumption", "总燃油消耗", "Total Fuel Consumption", "sensor", "", "L", 1},
-	{36, "LaneCurvature", "车道线曲率", "Lane Line Curvature", "sensor", "", "", 1},
-	{37, "RightLineDistance", "右侧线距离", "Right Lane Distance", "sensor", "", "m", 1},
-	{38, "LeftLineDistance", "左侧线距离", "Left Lane Distance", "sensor", "", "m", 1},
-	{39, "BatteryVoltage12V", "蓄电池电压", "Battery Voltage", "sensor", "voltage", "V", 1}, // seems to be 0 all the time?
-	{40, "RadarFrontLeft", "雷达左前", "Radar Left Front", "sensor", "distance", "m", 1},
-	{41, "RadarFrontRight", "雷达右前", "Radar Right Front", "sensor", "distance", "m", 1},
-	{42, "RadarRearLeft", "雷达左后", "Radar Left Rear", "sensor", "distance", "m", 1},
-	{43, "RadarRearRight", "雷达右后", "Radar Right Rear", "sensor", "distance", "m", 1},
+	{36, "LaneLineCurvature", "车道线曲率", "Lane Line Curvature", "sensor", "", "", 1},
+	{37, "RightLaneDistance", "右侧线距离", "Right Lane Distance", "sensor", "", "", 1},
+	{38, "LeftLaneDistance", "左侧线距离", "Left Lane Distance", "sensor", "", "", 1},
+	{39, "BatteryVoltage12V", "蓄电池电压", "Battery Voltage 12V", "sensor", "", "", 1}, // seems to be 0 all the time?
+	{40, "RadarLeftFront", "雷达左前", "Radar Left Front", "sensor", "distance", "m", 1},
+	{41, "RadarRightFront", "雷达右前", "Radar Right Front", "sensor", "distance", "m", 1},
+	{42, "RadarLeftRear", "雷达左后", "Radar Left Rear", "sensor", "distance", "m", 1},
+	{43, "RadarRightRear", "雷达右后", "Radar Right Rear", "sensor", "distance", "m", 1},
 	{44, "RadarLeft", "雷达左", "Radar Left", "sensor", "distance", "m", 1},
-	{45, "RadarFrontMidLeft", "雷达前左中", "Radar Front Left Center", "sensor", "distance", "m", 1},
-	{46, "RadarFrontMidRight", "雷达前右中", "Radar Front Right Center", "sensor", "distance", "m", 1},
-	{47, "RadarRearCenter", "雷达中后", "Radar Center Rear", "sensor", "distance", "m", 1},
+	{45, "RadarFrontLeftCenter", "雷达前左中", "Radar Front Left Center", "sensor", "distance", "m", 1},
+	{46, "RadarFrontRightCenter", "雷达前右中", "Radar Front Right Center", "sensor", "distance", "m", 1},
+	{47, "RadarCenterRear", "雷达中后", "Radar Center Rear", "sensor", "distance", "m", 1},
 	{48, "FrontWiperSpeed", "前雨刮速度", "Front Wiper Speed", "sensor", "", "", 1},
 	{49, "WiperGear", "雨刮档位", "Wiper Gear", "sensor", "", "", 1},
 	{50, "CruiseSwitch", "巡航开关", "Cruise Switch", "sensor", "", "", 1},
-	{51, "DistanceToCarAhead", "前车距离", "Distance To Vehicle Ahead", "sensor", "distance", "m", 1},
+	{51, "DistanceToVehicleAhead", "前车距离", "Distance To The Vehicle Ahead", "sensor", "distance", "m", 1},
 	{52, "ChargingStatus", "充电状态", "Charging Status", "sensor", "", "", 1},
 	{53, "LeftFrontTirePressure", "左前轮气压", "Left Front Tire Pressure", "sensor", "pressure", "bar", 0.01},
 	{54, "RightFrontTirePressure", "右前轮气压", "Right Front Tire Pressure", "sensor", "pressure", "bar", 0.01},
@@ -248,23 +248,23 @@ var AllSensors = []SensorDefinition{
 	{58, "RightTurnSignal", "右转向灯", "Right Turn Signal", "binary_sensor", "light", "", 1},
 	{59, "DriverDoorLock", "主驾车门锁", "Driver Door Lock", "binary_sensor", "lock", "", 1},
 	// what is ID 60? not documeneted in the spec.
-	{61, "DriverWindowOpenPercent", "主驾车窗打开百分比", "Driver Window Open Percentage", "sensor", "", "%", 1},
-	{62, "PassengerWindowOpenPercent", "副驾车窗打开百分比", "Passenger Window Open Percentage", "sensor", "", "%", 1},
-	{63, "LeftRearWindowOpenPercent", "左后车窗打开百分比", "Left Rear Window Open Percentage", "sensor", "", "%", 1},
-	{64, "RightRearWindowOpenPercent", "右后车窗打开百分比", "Right Rear Window Open Percentage", "sensor", "", "%", 1},
-	{65, "SunroofOpenPercent", "天窗打开百分比", "Sunroof Open Percentage", "sensor", "", "%", 1},
-	{66, "SunshadeOpenPercent", "遮阳帘打开百分比", "Sunshade Open Percentage", "sensor", "", "%", 1},
+	{61, "DriverWindowOpenPercent", "主驾车窗打开百分比", "Driver Window Open Percentage", "sensor", "", "%", 1}, // Was DriverWindowOpenPercentage
+	{62, "PassengerWindowOpenPercent", "副驾车窗打开百分比", "Passenger Window Open Percentage", "sensor", "", "%", 1}, // Was PassengerWindowOpenPercentage
+	{63, "LeftRearWindowOpenPercent", "左后车窗打开百分比", "Left Rear Window Open Percentage", "sensor", "", "%", 1}, // Fixed typo Lear -> Rear and name
+	{64, "RightRearWindowOpenPercent", "右后车窗打开百分比", "Right Rear Window Open Percentage", "sensor", "", "%", 1}, // Was RightRearWindowOpenPercentage
+	{65, "SunroofOpenPercent", "天窗打开百分比", "Sunroof Open Percentage", "sensor", "", "%", 1}, // Was SunroofOpenPercentage
+	{66, "SunshadeOpenPercent", "遮阳帘打开百分比", "Sunshade Open Percentage", "sensor", "", "%", 1}, // Was SunshadeOpenPercentage
 	{67, "VehicleOperatingMode", "整车工作模式", "Vehicle Working Mode", "sensor", "", "", 1},
 	{68, "VehicleRunningMode", "整车运行模式", "Vehicle Operation Mode", "sensor", "", "", 1},
 	{69, "Month", "月", "Month", "sensor", "", "", 1},
 	{70, "Day", "日", "Day", "sensor", "", "", 1},
 	{71, "Hour", "时", "Hour", "sensor", "", "", 1},
-	{72, "Year", "年", "Year", "sensor", "", "", 1},
-	{73, "PassengerSeatbeltWarn", "副驾安全带警告", "Passenger Seat Belt Warning", "sensor", "", "", 1},
-	{74, "Row2LeftSeatbelt", "二排左安全带", "Second Row Left Seat Belt", "sensor", "", "", 1},
-	{75, "Row2RightSeatbelt", "二排右安全带", "Second Row Right Seat Belt", "sensor", "", "", 1},
-	{76, "Row2CenterSeatbelt", "二排中安全带", "Second Row Center Seat Belt", "sensor", "", "", 1},
-	{77, "ACStatus", "空调状态", "AC Status", "binary_sensor", "power", "", 1},
+	{72, "Minute", "分", "Minute", "sensor", "", "", 1}, // Fixed: was labeled Year but described as Minutes
+	{73, "PassengerSeatBeltWarn", "副驾安全带警告", "Passenger Seat Belt Warning", "sensor", "", "", 1},
+	{74, "Row2LeftSeatbelt", "二排左安全带", "Second Row Left Seat Belt", "sensor", "", "", 1}, // Was SecondRowLeftSeatBelt
+	{75, "Row2RightSeatbelt", "二排右安全带", "Second Row Right Seat Belt", "sensor", "", "", 1}, // Was SecondRowRightSeatBelt
+	{76, "Row2CenterSeatbelt", "二排中安全带", "Second Row Center Seat Belt", "sensor", "", "", 1}, // Was Second Row Center Seat Belt (contained space)
+	{77, "ACStatus", "空调状态", "AC Status", "sensor", "", "", 1},
 	{78, "FanSpeedLevel", "风量档位", "Fan Speed Level", "sensor", "", "", 1},
 	{79, "ACCirculationMode", "空调循环方式", "AC Circulation Mode", "sensor", "", "", 1},
 	{80, "ACBlowingMode", "空调出风模式", "AC Blowing Mode", "sensor", "", "", 1},
@@ -272,40 +272,40 @@ var AllSensors = []SensorDefinition{
 	{82, "PassengerDoor", "副驾车门", "Passenger Door", "binary_sensor", "door", "", 1},
 	{83, "LeftRearDoor", "左后车门", "Left Rear Door", "binary_sensor", "door", "", 1},
 	{84, "RightRearDoor", "右后车门", "Right Rear Door", "binary_sensor", "door", "", 1},
-	{85, "Hood", "引擎盖", "Hood", "binary_sensor", "door", "", 1},
-	{86, "TrunkDoor", "后备箱门", "Trunk", "binary_sensor", "door", "", 1},
-	{87, "FuelTankCap", "油箱盖", "Fuel Tank Cap", "binary_sensor", "door", "", 1},
-	{88, "AutoParking", "自动驻车", "Automatic Parking", "binary_sensor", "power", "", 1},
+	{85, "Hood", "引擎盖", "Hood", "binary_sensor", "opening", "", 1},
+	{86, "TrunkDoor", "后备箱门", "Trunk", "binary_sensor", "opening", "", 1}, // Was Trunk (struct field is TrunkDoor)
+	{87, "FuelTankCap", "油箱盖", "Fuel Tank Cap", "binary_sensor", "opening", "", 1},
+	{88, "AutomaticParking", "自动驻车", "Automatic Parking", "sensor", "", "", 1},
 	{89, "ACCCruiseStatus", "ACC巡航状态", "ACC Cruise Status", "sensor", "", "", 1},
-	{90, "RearLeftProximityAlert", "左后接近告警", "Left Rear Approach Warning", "sensor", "", "", 1},
-	{91, "RearRightProximityAlert", "右后接近告警", "Right Rear Approach Warning", "sensor", "", "", 1},
-	{92, "LaneKeepAssistStatus", "车道保持状态", "Lane Keeping Status", "sensor", "", "", 1},
+	{90, "RearLeftProximityAlert", "左后接近告警", "Left Rear Approach Warning", "sensor", "", "", 1}, // Was LeftRearApproachWarning
+	{91, "RearRightProximityAlert", "右后接近告警", "Right Rear Approach Warning", "sensor", "", "", 1}, // Was RightRearApproachWarning
+	{92, "LaneKeepAssistStatus", "车道保持状态", "Lane Keeping Status", "sensor", "", "", 1}, // Was Lane Keeping Status (contained space)
 	{93, "LeftRearDoorLock", "左后车门锁", "Left Rear Door Lock", "binary_sensor", "lock", "", 1},
 	{94, "PassengerDoorLock", "副驾车门锁", "Passenger Door Lock", "binary_sensor", "lock", "", 1},
 	{95, "RightRearDoorLock", "右后车门锁", "Right Rear Door Lock", "binary_sensor", "lock", "", 1},
-	{96, "TrunkLock", "后备箱门锁", "Trunk Lock", "binary_sensor", "lock", "", 1},
+	{96, "TrunkDoorLock", "后备箱门锁", "Trunk Door Lock", "binary_sensor", "lock", "", 1},
 	{97, "LeftRearChildLock", "左后儿童锁", "Left Rear Child Lock", "binary_sensor", "lock", "", 1},
 	{98, "RightRearChildLock", "右后儿童锁", "Right Rear Child Lock", "binary_sensor", "lock", "", 1},
-	{99, "LowBeamLights", "小灯", "Low Beam", "binary_sensor", "light", "", 1},
+	{99, "ParkingLights", "小灯", "Parking Lights", "binary_sensor", "light", "", 1},
 	{100, "LowBeamLights", "近光灯", "Low Beam", "binary_sensor", "light", "", 1},
 	{101, "HighBeamLights", "远光灯", "High Beam", "binary_sensor", "light", "", 1},
 	// what is ID 102 and 103? not documeneted in the spec.
-	{104, "FrontFogLights", "前雾灯", "Front Fog Lamp", "binary_sensor", "light", "", 1},
-	{105, "RearFogLights", "后雾灯", "Rear Fog Lamp", "binary_sensor", "light", "", 1},
-	{106, "FootwellLights", "脚照灯", "Footlights", "binary_sensor", "light", "", 1},
+	{104, "FrontFogLamp", "前雾灯", "Front Fog Lamp", "binary_sensor", "light", "", 1},
+	{105, "RearFogLamp", "后雾灯", "Rear Fog Lamp", "binary_sensor", "light", "", 1},
+	{106, "FootwellLights", "脚照灯", "Footwell Lights", "binary_sensor", "light", "", 1},
 	{107, "DaytimeRunningLights", "日行灯", "Daytime Running Lights", "binary_sensor", "light", "", 1},
-	{108, "EngineWaterTemperature", "发动机水温", "Engine Water Temperature", "sensor", "temperature", "°C", 1},
-	{109, "HazardLights", "双闪", "Double Flash", "binary_sensor", "light", "", 1},
+	{108, "EngineWaterTemperature", "发动机水温", "Engine Water Temperature", "sensor", "", "°C", 1},
+	{109, "HazardLights", "双闪", "Hazard Lights", "binary_sensor", "light", "", 1},
 
-	{1001, "SurroundViewStatus", "熄火录制配置", "Surround View Status", "sensor", "", "", 1},
-	{1002, "UIConfigVersion", "熄火哨兵警报", "Configuration UI Version", "sensor", "", "", 1},
-	{1003, "SentryModeStatus", "WiFi状态", "Sentry Mode Status", "sensor", "", "", 1},
-	{1004, "PowerOffRecordingConfig", "蓝牙状态", "Recording Configuration Switch", "sensor", "", "", 1},
-	{1006, "PowerOffSentryAlarm", "蓝牙信号强度", "Sentry Alarm", "sensor", "signal_strength", "dBm", 1},
-	{1007, "WiFiStatus", "上次哨兵触发时间", "WIFI Status", "sensor", "connectivity", "", 1},
-	{1008, "BluetoothStatus", "上次哨兵触发图像", "Bluetooth Status", "sensor", "connectivity", "", 1},
-	{1009, "BluetoothSignalStrength", "上次录像开始时间", "Bluetooth Signal Strength", "sensor", "signal_strength", "dBm", 1},
-	{1101, "WirelessADBSwitch", "上次录像结束时间", "Wireless ADB Switch", "sensor", "power", "", 1},
+	{1001, "SurroundViewStatus", "全景状态", "Panorama Status", "sensor", "", "", 1}, // Fixed FieldName and Name
+	{1002, "UIConfigVersion", "配置UI版本", "Configuration UI Version", "sensor", "", "", 1}, // Fixed Name
+	{1003, "SentryModeStatus", "哨兵状态", "Sentry Status", "binary_sensor", "safety", "", 1}, // Fixed FieldName and Name
+	{1004, "PowerOffRecordingConfig", "熄火录像配置开关", "Recording Configuration Switch", "binary_sensor", "power", "", 1}, // Fixed FieldName and Name
+	{1006, "PowerOffSentryAlarm", "熄火哨兵报警", "Sentry Alarm", "sensor", "problem", "", 1}, // Fixed FieldName and Name
+	{1007, "WiFiStatus", "WIFI状态", "WIFI Status", "binary_sensor", "connectivity", "", 1}, // Fixed Name
+	{1008, "BluetoothStatus", "蓝牙状态", "Bluetooth Status", "binary_sensor", "connectivity", "", 1}, // Fixed Name
+	{1009, "BluetoothSignalStrength", "蓝牙信号强度", "Bluetooth Signal Strength", "sensor", "signal_strength", "dBm", 1}, // Fixed Name
+	{1101, "WirelessADBSwitch", "无线ADB开关", "Wireless ADB Switch", "sensor", "", "", 1}, // Fixed Name
 
 	{2001, "AIPersonConfidence", "AI识别人可信度", "AI Person Confidence", "sensor", "", "", 1},
 	{2002, "AIVehicleConfidence", "AI识别车可信度", "AI Vehicle Confidence", "sensor", "", "", 1},
@@ -313,7 +313,7 @@ var AllSensors = []SensorDefinition{
 	{2004, "LastSentryTriggerImage", "上次哨兵触发画面", "Last Sentry Trigger Image", "sensor", "", "", 1},
 	{2005, "LastVideoStartTime", "上次录像文件开始时间", "Last Video Start Time", "sensor", "timestamp", "", 1},
 	{2006, "LastVideoEndTime", "上次录像文件结束时间", "Last Video End Time", "sensor", "timestamp", "", 1},
-	{2007, "LastVideoPath", "上次录像路径", "Last Video Path", "sensor", "", "", 1},
+	{2007, "LastVideoPath", "上次录像路径", "Last Video Path", "sensor", "", "", 1}, // Removed trailing dot in FieldName/EnglishName
 }
 
 // GetSensorByID returns a sensor definition by its ID
