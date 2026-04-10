@@ -26,7 +26,7 @@ BYD-HASS is a small Go program that turns data from the Diplus API into MQTT mes
 Open Termux and run:
 
 ```bash
-bash <(curl -sSL https://raw.githubusercontent.com/jkaberg/byd-hass/main/install.sh)
+bash <(curl -sSL https://raw.githubusercontent.com/Allthebester/byd-hass/main/install.sh)
 ```
 
 The installer will:
