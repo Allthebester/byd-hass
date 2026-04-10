@@ -63,11 +63,25 @@ func parseValueString(valString string, sensorData *SensorData) error {
 		// Lookup the struct field by the authoritative key directly; no fallback
 		// conversion is needed because Diplus now echoes back exactly what we
 		// requested.
+		// 1. Try exact match first (case-sensitive)
 		field := v.FieldByName(key)
+
+		// 2. Fallback: If not found, try a case-insensitive search
+		if !field.IsValid() {
+			for i := 0; i < v.NumField(); i++ {
+				structFieldName := v.Type().Field(i).Name
+				if strings.EqualFold(structFieldName, key) {
+					field = v.Field(i)
+					break
+				}
+			}
+		}
+
 		if !field.IsValid() || !field.CanSet() {
-			// Field not found or not settable; skip.
+			// Field not found in struct; skip it.
 			continue
 		}
+
 
 		// Determine scaling factor based on sensor metadata (defaults to 1)
 		scaleFactor := GetScaleFactor(ToSnakeCase(key))
