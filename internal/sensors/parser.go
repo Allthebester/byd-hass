@@ -96,43 +96,86 @@ func parseValueString(valString string, sensorData *SensorData) error {
 	return nil
 }
 
-// setFieldValue sets a reflect.Value field with the parsed string value
+// statusTranslations contains ALL mappings from the RESTFUL Config.yaml
+var statusTranslations = map[string]string{
+	// --- Power & Connectivity ---
+	"开":        "On",
+	"关":        "Off",
+	"开启":      "On",
+	"关闭":      "Off",
+	"已连接":    "Connected",
+	"未连接":    "Disconnected",
+	"连接":      "Connected", // Used in Charger Insertion Status
+	"断开":      "Disconnected",
+
+	// --- Locks & Safety ---
+	"未锁":      "Unlocked",
+	"无效":      "Locked/Inactive", // YAML: trim != '无效' for locks
+	"未系":      "Unbuckled",       // Used in Seatbelt statuses
+	"无报警":    "No Alarm",        // Sentry Alarm
+	"无告警":    "No Warning",      // Proximity Alarms
+	"禁用":      "Disabled",        // ACC and Auto Parking
+
+	// --- Doors & Openings ---
+	"关闭":      "Closed",           // Door/Hood/Boot statuses
+	"开启":      "Open",
+
+	// --- Weather & UI ---
+	"晴天":      "Sunny",
+	"多云":      "Cloudy",
+	"阴天":      "Overcast",
+	"雨":        "Rainy",
+	"摄氏度":    "°C",
+	"华氏度":    "°F",
+	"未显示":    "Not Displayed",    // Panorama State
+
+	// --- A/C Modes (Exact matches from YAML) ---
+	"内循环":    "Recirculation",
+	"外循环":    "Fresh Air",
+	"吹面":      "Face",
+	"吹脚":      "Feet",
+	"吹面吹脚":  "Face & Feet",
+	"除霜":      "Defrost",
+	"吹脚除霜":  "Feet & Defrost",
+}
+
 func setFieldValue(field reflect.Value, valueStr string, scaleFactor float64) error {
-	// Normalize the value string for European formats
 	normalizedValue := normalizeNumericValue(valueStr)
 
-	// If the normalized value is empty, treat it as null/not present
 	if normalizedValue == "" {
-		return nil // Leave the pointer nil
+		return nil
 	}
 	if field.Kind() != reflect.Ptr {
 		return fmt.Errorf("field is not a pointer")
 	}
 
-	// Get the type of the pointer's element
 	elemType := field.Type().Elem()
-
-	// Create a new pointer to the element type
 	newVal := reflect.New(elemType)
 
 	switch elemType.Kind() {
-	case reflect.Float32, reflect.Float64:
-		floatVal, err := strconv.ParseFloat(normalizedValue, 64)
-		if err != nil {
-			return fmt.Errorf("failed to parse float value '%s': %w", normalizedValue, err)
-		}
-		newVal.Elem().SetFloat(floatVal * scaleFactor)
-	case reflect.String:
-		newVal.Elem().SetString(normalizedValue)
-	default:
-		// We currently only expect *float64 and *string fields in SensorData.
-		// Unknown types are ignored rather than treated as errors to keep the
-		// parser resilient to future struct changes.
-		return nil
+		case reflect.Float32, reflect.Float64:
+			floatVal, err := strconv.ParseFloat(normalizedValue, 64)
+			if err != nil {
+				return fmt.Errorf("failed to parse float value '%s': %w", normalizedValue, err)
+			}
+			newVal.Elem().SetFloat(floatVal * scaleFactor)
+
+		case reflect.String:
+			// Trim spaces as the YAML does with | trim
+			trimmedValue := strings.TrimSpace(normalizedValue)
+
+			// Check if we have a translation for this specific value
+			if translated, ok := statusTranslations[trimmedValue]; ok {
+				newVal.Elem().SetString(translated)
+			} else {
+				newVal.Elem().SetString(trimmedValue)
+			}
+
+		default:
+			return nil
 	}
 
 	field.Set(newVal)
-
 	return nil
 }
 
