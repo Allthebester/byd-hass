@@ -189,7 +189,7 @@ type SensorDefinition struct {
 // slice accordingly; build failures will warn you if you forget.
 // ----------------------------------------------------------------------------
 var AllSensors = []SensorDefinition{
-	{1, "PowerStatus", "电源状态", "Power Status", "sensor", "", "", 1},
+	{1, "PowerStatus", "电源状态", "Power Status", "binary_sensor", "", "", 1},
 	{2, "Speed", "车速", "Speed", "sensor", "speed", "km/h", 1},
 	{3, "Mileage", "里程", "Mileage", "sensor", "distance", "km", 0.1},
 	{4, "GearPosition", "档位", "Gear Position", "sensor", "", "", 1},
@@ -301,11 +301,11 @@ var AllSensors = []SensorDefinition{
 	{1002, "UIConfigVersion", "配置UI版本", "Configuration UI Version", "sensor", "", "", 1}, // Fixed Name
 	{1003, "SentryModeStatus", "哨兵状态", "Sentry Status", "binary_sensor", "safety", "", 1}, // Fixed FieldName and Name
 	{1004, "PowerOffRecordingConfig", "熄火录像配置开关", "Recording Configuration Switch", "binary_sensor", "power", "", 1}, // Fixed FieldName and Name
-	{1006, "PowerOffSentryAlarm", "熄火哨兵报警", "Sentry Alarm", "sensor", "problem", "", 1}, // Fixed FieldName and Name
+	{1006, "PowerOffSentryAlarm", "熄火哨兵报警", "Sentry Alarm", "binary_sensor", "problem", "", 1}, // Fixed FieldName and Name
 	{1007, "WiFiStatus", "WIFI状态", "WIFI Status", "binary_sensor", "connectivity", "", 1}, // Fixed Name
 	{1008, "BluetoothStatus", "蓝牙状态", "Bluetooth Status", "binary_sensor", "connectivity", "", 1}, // Fixed Name
 	{1009, "BluetoothSignalStrength", "蓝牙信号强度", "Bluetooth Signal Strength", "sensor", "signal_strength", "dBm", 1}, // Fixed Name
-	{1101, "WirelessADBSwitch", "无线ADB开关", "Wireless ADB Switch", "sensor", "", "", 1}, // Fixed Name
+	{1101, "WirelessADBSwitch", "无线ADB开关", "Wireless ADB Switch", "binary_sensor", "", "", 1}, // Fixed Name
 
 	{2001, "AIPersonConfidence", "AI识别人可信度", "AI Person Confidence", "sensor", "", "", 1},
 	{2002, "AIVehicleConfidence", "AI识别车可信度", "AI Vehicle Confidence", "sensor", "", "", 1},
