@@ -7,6 +7,7 @@ import (
 
 // SensorData struct to hold all possible sensor values.
 // We use pointers to float64 for numeric values so we can distinguish between a missing value (nil) and a value of 0.
+// Status-based fields have been converted to *string to allow English labels in Home Assistant.
 type SensorData struct {
 	Timestamp time.Time `json:"timestamp"`
 
@@ -14,7 +15,7 @@ type SensorData struct {
 	Speed            *float64 `json:"speed,omitempty"`
 	Mileage          *float64 `json:"mileage,omitempty"`
 	GearPosition     *float64 `json:"gear_position,omitempty"`
-	PowerStatus      *float64 `json:"power_status,omitempty"`
+	PowerStatus      *string  `json:"power_status,omitempty"` // CONVERTED: On/Off
 	SteeringAngle    *float64 `json:"steering_angle,omitempty"`
 	AcceleratorDepth *float64 `json:"accelerator_depth,omitempty"`
 	BrakeDepth       *float64 `json:"brake_depth,omitempty"`
@@ -28,8 +29,8 @@ type SensorData struct {
 	FuelPercentage        *float64 `json:"fuel_percentage,omitempty"`
 	BatteryPercentage     *float64 `json:"battery_percentage,omitempty"`
 	BatteryCapacity       *float64 `json:"battery_capacity,omitempty"`
-	ChargingStatus        *float64 `json:"charging_status,omitempty"`
-	ChargeGunState        *float64 `json:"charge_gun_state,omitempty"`
+	ChargingStatus        *string  `json:"charging_status,omitempty"` // CONVERTED: Status labels
+	ChargeGunState        *string  `json:"charge_gun_state,omitempty"` // CONVERTED: Connected/Disconnected
 	MaxBatteryVoltage     *float64 `json:"max_battery_voltage,omitempty"`
 	MinBatteryVoltage     *float64 `json:"min_battery_voltage,omitempty"`
 	TotalPowerConsumption *float64 `json:"total_power_consumption,omitempty"`
@@ -42,23 +43,23 @@ type SensorData struct {
 	MaxBatteryTemp     *float64 `json:"max_battery_temp,omitempty"`
 	CabinTemperature   *float64 `json:"cabin_temperature,omitempty"`
 	OutsideTemperature *float64 `json:"outside_temperature,omitempty"`
-	TemperatureUnit    *float64 `json:"temperature_unit,omitempty"`
+	TemperatureUnit    *string  `json:"temperature_unit,omitempty"` // CONVERTED: °C/°F
 
 	// --- Doors & Locks ---
-	DriverDoor         *float64 `json:"driver_door,omitempty"`
-	PassengerDoor      *float64 `json:"passenger_door,omitempty"`
-	LeftRearDoor       *float64 `json:"left_rear_door,omitempty"`
-	RightRearDoor      *float64 `json:"right_rear_door,omitempty"`
-	TrunkDoor          *float64 `json:"trunk_door,omitempty"`
-	Hood               *float64 `json:"hood,omitempty"`
-	DriverDoorLock     *float64 `json:"driver_door_lock,omitempty"`
-	PassengerDoorLock  *float64 `json:"passenger_door_lock,omitempty"`
-	LeftRearDoorLock   *float64 `json:"left_rear_door_lock,omitempty"`
-	RightRearDoorLock  *float64 `json:"right_rear_door_lock,omitempty"`
-	TrunkLock          *float64 `json:"trunk_lock,omitempty"`
-	RemoteLockStatus   *float64 `json:"remote_lock_status,omitempty"`
-	LeftRearChildLock  *float64 `json:"left_rear_child_lock,omitempty"`
-	RightRearChildLock *float64 `json:"right_rear_child_lock,omitempty"`
+	DriverDoor         *string `json:"driver_door,omitempty"` // CONVERTED: Open/Closed
+	PassengerDoor      *string `json:"passenger_door,omitempty"` // CONVERTED: Open/Closed
+	LeftRearDoor       *string `json:"left_rear_door,omitempty"` // CONVERTED: Open/Closed
+	RightRearDoor      *string `json:"right_rear_door,omitempty"` // CONVERTED: Open/Closed
+	TrunkDoor          *string `json:"trunk_door,omitempty"` // CONVERTED: Open/Closed
+	Hood               *string `json:"hood,omitempty"` // CONVERTED: Open/Closed
+	DriverDoorLock     *string `json:"driver_door_lock,omitempty"` // CONVERTED: Locked/Unlocked
+	PassengerDoorLock  *string `json:"passenger_door_lock,omitempty"` // CONVERTED: Locked/Unlocked
+	LeftRearDoorLock   *string `json:"left_rear_door_lock,omitempty"` // CONVERTED: Locked/Unlocked
+	RightRearDoorLock  *string `json:"right_rear_door_lock,omitempty"` // CONVERTED: Locked/Unlocked
+	TrunkLock          *string `json:"trunk_lock,omitempty"` // CONVERTED: Locked/Unlocked
+	RemoteLockStatus   *string `json:"remote_lock_status,omitempty"` // CONVERTED: Locked/Unlocked
+	LeftRearChildLock  *string `json:"left_rear_child_lock,omitempty"` // CONVERTED: Locked/Unlocked
+	RightRearChildLock *string `json:"right_rear_child_lock,omitempty"` // CONVERTED: Locked/Unlocked
 
 	// --- Windows & Sunroof ---
 	DriverWindowOpenPercent    *float64 `json:"driver_window_open_percent,omitempty"`
@@ -75,42 +76,42 @@ type SensorData struct {
 	RightRearTirePressure  *float64 `json:"right_rear_tire_pressure,omitempty"`
 
 	// --- Lights & Wipers ---
-	LowBeamLights        *float64 `json:"low_beam_lights,omitempty"`
-	HighBeamLights       *float64 `json:"high_beam_lights,omitempty"`
-	FrontFogLights       *float64 `json:"front_fog_lights,omitempty"`
-	RearFogLights        *float64 `json:"rear_fog_lights,omitempty"`
-	ParkingLights        *float64 `json:"parking_lights,omitempty"`
-	DaytimeRunningLights *float64 `json:"daytime_running_lights,omitempty"`
-	LeftTurnSignal       *float64 `json:"left_turn_signal,omitempty"`
-	RightTurnSignal      *float64 `json:"right_turn_signal,omitempty"`
-	HazardLights         *float64 `json:"hazard_lights,omitempty"`
+	LowBeamLights        *string `json:"low_beam_lights,omitempty"` // CONVERTED: On/Off
+	HighBeamLights       *string `json:"high_beam_lights,omitempty"` // CONVERTED: On/Off
+	FrontFogLights       *string `json:"front_fog_lights,omitempty"` // CONVERTED: On/Off
+	RearFogLights        *string `json:"rear_fog_lights,omitempty"` // CONVERTED: On/Off
+	ParkingLights        *string `json:"parking_lights,omitempty"` // CONVERTED: On/Off
+	DaytimeRunningLights *string `json:"daytime_running_lights,omitempty"` // CONVERTED: On/Off
+	LeftTurnSignal       *string `json:"left_turn_signal,omitempty"` // CONVERTED: On/Off
+	RightTurnSignal      *string `json:"right_turn_signal,omitempty"` // CONVERTED: On/Off
+	HazardLights         *string `json:"hazard_lights,omitempty"` // CONVERTED: On/Off
 	WiperGear            *float64 `json:"wiper_gear,omitempty"`
 	FrontWiperSpeed      *float64 `json:"front_wiper_speed,omitempty"`
 	LastWiperTime        *float64 `json:"last_wiper_time,omitempty"`
 
 	// --- Climate Control (AC) ---
-	ACStatus            *float64 `json:"ac_status,omitempty"`
+	ACStatus            *string  `json:"ac_status,omitempty"` // CONVERTED: On/Off
 	DriverACTemperature *float64 `json:"driver_ac_temperature,omitempty"`
 	FanSpeedLevel       *float64 `json:"fan_speed_level,omitempty"`
-	ACCirculationMode   *float64 `json:"ac_circulation_mode,omitempty"`
-	ACBlowingMode       *float64 `json:"ac_blowing_mode,omitempty"`
-	Weather             *float64 `json:"weather,omitempty"`
-	FootwellLights      *float64 `json:"footwell_lights,omitempty"`
+	ACCirculationMode   *string  `json:"ac_circulation_mode,omitempty"` // CONVERTED: Recirc/Fresh
+	ACBlowingMode       *string  `json:"ac_blowing_mode,omitempty"` // CONVERTED: Face/Feet etc
+	Weather             *string  `json:"weather,omitempty"` // CONVERTED: Sunny/Rainy etc
+	FootwellLights      *string  `json:"footwell_lights,omitempty"` // CONVERTED: On/Off
 
 	// --- Driving Assistance & Safety ---
-	ACCCruiseStatus       *float64 `json:"acc_cruise_status,omitempty"`
-	LaneKeepAssistStatus  *float64 `json:"lane_keep_assist_status,omitempty"`
-	DriverSeatBeltStatus        *float64 `json:"driver_seatbelt,omitempty"`
-	PassengerSeatbeltWarn *float64 `json:"passenger_seatbelt_warn,omitempty"`
-	Row2LeftSeatbelt      *float64 `json:"row2_left_seatbelt,omitempty"`
-	Row2RightSeatbelt     *float64 `json:"row2_right_seatbelt,omitempty"`
-	Row2CenterSeatbelt    *float64 `json:"row2_center_seatbelt,omitempty"`
+	ACCCruiseStatus       *string `json:"acc_cruise_status,omitempty"` // CONVERTED: Enabled/Disabled
+	LaneKeepAssistStatus  *string `json:"lane_keep_assist_status,omitempty"` // CONVERTED: Enabled/Disabled
+	DriverSeatBeltStatus        *string `json:"driver_seatbelt,omitempty"` // CONVERTED: Buckled/Unbuckled
+	PassengerSeatbeltWarn *string `json:"passenger_seatbelt_warn,omitempty"` // CONVERTED: Warning/Ok
+	Row2LeftSeatbelt      *string `json:"row2_left_seatbelt,omitempty"` // CONVERTED: Buckled/Unbuckled
+	Row2RightSeatbelt     *string `json:"row2_right_seatbelt,omitempty"` // CONVERTED: Buckled/Unbuckled
+	Row2CenterSeatbelt    *string `json:"row2_center_seatbelt,omitempty"` // CONVERTED: Buckled/Unbuckled
 	DistanceToVehicleAhead    *float64 `json:"distance_to_car_ahead,omitempty"`
 	LaneCurvature         *float64 `json:"lane_curvature,omitempty"`
 	RightLineDistance     *float64 `json:"right_line_distance,omitempty"`
 	LeftLineDistance      *float64 `json:"left_line_distance,omitempty"`
-	CruiseSwitch          *float64 `json:"cruise_switch,omitempty"`
-	AutoParking           *float64 `json:"auto_parking,omitempty"`
+	CruiseSwitch          *string  `json:"cruise_switch,omitempty"` // CONVERTED: On/Off
+	AutoParking           *string  `json:"auto_parking,omitempty"` // CONVERTED: Enabled/Disabled
 
 	// --- Radar Sensors ---
 	RadarFrontLeft          *float64 `json:"radar_front_left,omitempty"`
@@ -121,21 +122,21 @@ type SensorData struct {
 	RadarFrontMidLeft       *float64 `json:"radar_front_mid_left,omitempty"`
 	RadarFrontMidRight      *float64 `json:"radar_front_mid_right,omitempty"`
 	RadarRearCenter         *float64 `json:"radar_rear_center,omitempty"`
-	RearLeftProximityAlert  *float64 `json:"rear_left_proximity_alert,omitempty"`
-	RearRightProximityAlert *float64 `json:"rear_right_proximity_alert,omitempty"`
+	RearLeftProximityAlert  *string  `json:"rear_left_proximity_alert,omitempty"` // CONVERTED: Warning/Ok
+	RearRightProximityAlert *string  `json:"rear_right_proximity_alert,omitempty"` // CONVERTED: Warning/Ok
 
 	// --- Vehicle & System ---
 	VehicleOperatingMode    *float64 `json:"vehicle_operating_mode,omitempty"`
-	VehicleRunningMode      *float64 `json:"vehicle_running_mode,omitempty"`
-	SurroundViewStatus      *float64 `json:"surround_view_status,omitempty"`
+	VehicleRunningMode      *string  `json:"vehicle_running_mode,omitempty"` // CONVERTED: Drive Modes
+	SurroundViewStatus      *string  `json:"surround_view_status,omitempty"` // CONVERTED: Displayed/Not
 	UIConfigVersion         *float64 `json:"ui_config_version,omitempty"`
-	SentryModeStatus        *float64 `json:"sentry_mode_status,omitempty"`
-	PowerOffRecordingConfig *float64 `json:"power_off_recording_config,omitempty"`
-	PowerOffSentryAlarm     *float64 `json:"power_off_sentry_alarm,omitempty"`
-	WiFiStatus              *float64 `json:"wifi_status,omitempty"`
-	BluetoothStatus         *float64 `json:"bluetooth_status,omitempty"`
+	SentryModeStatus        *string  `json:"sentry_mode_status,omitempty"` // CONVERTED: On/Off
+	PowerOffRecordingConfig *string  `json:"power_off_recording_config,omitempty"` // CONVERTED: On/Off
+	PowerOffSentryAlarm     *string  `json:"power_off_sentry_alarm,omitempty"` // CONVERTED: Alarm/No Alarm
+	WiFiStatus              *string  `json:"wifi_status,omitempty"` // CONVERTED: Connected/Disconnected
+	BluetoothStatus         *string  `json:"bluetooth_status,omitempty"` // CONVERTED: Connected/Disconnected
 	BluetoothSignalStrength *float64 `json:"bluetooth_signal_strength,omitempty"`
-	WirelessADBSwitch       *float64 `json:"wireless_adb_switch,omitempty"`
+	WirelessADBSwitch       *string  `json:"wireless_adb_switch,omitempty"` // CONVERTED: On/Off
 	SteeringRotationSpeed   *float64 `json:"steering_rotation_speed,omitempty"`
 
 	// --- AI & Video ---
@@ -162,7 +163,7 @@ type SensorDefinition struct {
 	FieldName         string
 	ChineseName       string
 	EnglishName       string
-	Category          string // "sensor", "binary_sensor", "device_tracker"
+	Category          string // "sensor" or "binary_sensor"
 	DeviceClass       string
 	UnitOfMeasurement string
 	ScaleFactor       float64
@@ -189,36 +190,36 @@ type SensorDefinition struct {
 // slice accordingly; build failures will warn you if you forget.
 // ----------------------------------------------------------------------------
 var AllSensors = []SensorDefinition{
-	{1, "PowerStatus", "电源状态", "Power Status", "binary_sensor", "", "", 1},
+	{1, "PowerStatus", "电源状态", "Power Status", "binary_sensor", "power", "", 1},
 	{2, "Speed", "车速", "Speed", "sensor", "speed", "km/h", 1},
 	{3, "Mileage", "里程", "Mileage", "sensor", "distance", "km", 0.1},
 	{4, "GearPosition", "档位", "Gear Position", "sensor", "", "", 1},
 	{5, "EngineRPM", "发动机转速", "Engine RPM", "sensor", "", "rpm", 1},
-	{6, "BrakeDepth", "刹车深度", "Brake Pedal Depth", "sensor", "", "%", 1}, // Was BrakePedalDepth
-	{7, "AcceleratorDepth", "加速踏板深度", "Accelerator Pedal Depth", "sensor", "", "%", 1}, // Was AcceleratorPedalDepth
+	{6, "BrakeDepth", "刹车深度", "Brake Pedal Depth", "sensor", "", "%", 1},
+	{7, "AcceleratorDepth", "加速踏板深度", "Accelerator Pedal Depth", "sensor", "", "%", 1},
 	{8, "FrontMotorRPM", "前电机转速", "Front Motor RPM", "sensor", "", "rpm", 1},
 	{9, "RearMotorRPM", "后电机转速", "Rear Motor RPM", "sensor", "", "rpm", 1},
 	{10, "EnginePower", "发动机功率", "Engine Power", "sensor", "power", "kW", 1},
 	{11, "FrontMotorTorque", "前电机扭矩", "Front Motor Torque", "sensor", "", "Nm", 1},
 	{12, "ChargeGunState", "充电枪插枪状态", "Charge Gun State", "binary_sensor", "plug", "", 1},
-	{13, "PowerConsumption100km", "百公里电耗", "Power consumption per 100 kilometers", "sensor", "", "kWh/100km", 1}, // Fixed case: PowerConsumption100KM -> PowerConsumption100km
+	{13, "PowerConsumption100km", "百公里电耗", "Power consumption per 100 kilometers", "sensor", "", "kWh/100km", 1},
 	{14, "MaxBatteryTemp", "最高电池温度", "Maximum Battery Temperature", "sensor", "temperature", "°C", 1},
 	{15, "AvgBatteryTemp", "平均电池温度", "Average Battery Temperature", "sensor", "temperature", "°C", 1},
 	{16, "MinBatteryTemp", "最低电池温度", "Minimum Battery Temperature", "sensor", "temperature", "°C", 1},
-	{17, "MaxBatteryVoltage", "最高电池电压", "Max Battery Voltage", "sensor", "voltage", "V", 1}, // This is the 12V battery voltage
+	{17, "MaxBatteryVoltage", "最高电池电压", "Max Battery Voltage", "sensor", "voltage", "V", 1},
 	{18, "MinBatteryVoltage", "最低电池电压", "Minimum Battery Voltage", "sensor", "voltage", "V", 1},
 	{19, "LastWiperTime", "上次雨刮时间", "Last Wiper Time", "sensor", "", "", 1},
 	{20, "Weather", "天气", "Weather", "sensor", "", "", 1},
-	{21, "DriverSeatBeltStatus", "主驾驶安全带状态", "Driver's seat belt status", "sensor", "", "", 1},
-	{22, "RemoteLockStatus", "远程锁车状态", "Remote Lock Status", "sensor", "", "", 1},
+	{21, "DriverSeatBeltStatus", "主驾驶安全带状态", "Driver's seat belt status", "binary_sensor", "safety", "", 1},
+	{22, "RemoteLockStatus", "远程锁车状态", "Remote Lock Status", "binary_sensor", "lock", "", 1},
 	// what is ID 23 and 24? not documeneted in the spec.
-	{25, "CabinTemperature", "车内温度", "Cabin Temperature", "sensor", "", "°C", 1},
+	{25, "CabinTemperature", "车内温度", "Cabin Temperature", "sensor", "temperature", "°C", 1},
 	{26, "OutsideTemperature", "车外温度", "Outside Temperature", "sensor", "temperature", "°C", 1},
-	{27, "DriverACTemperature", "主驾驶空调温度", "Driver AC temperature", "sensor", "temperature", "°C", 1}, // Was DriverACTemp
+	{27, "DriverACTemperature", "主驾驶空调温度", "Driver AC temperature", "sensor", "temperature", "°C", 1},
 	{28, "TemperatureUnit", "温度单位", "Temperature unit", "sensor", "", "", 1},
-	{29, "BatteryCapacity", "电池容量", "Battery Capacity", "sensor", "energy_storage", "kWh", 1}, // seems to be 0 all the time?
-	{30, "SteeringAngle", "方向盘转角", "Steering Wheel Angle", "sensor", "", "°", 1}, // Was SteeringWheelAngle
-	{31, "SteeringRotationSpeed", "方向盘转速", "Steering Wheel Speed", "sensor", "", "rpm", 1}, // Was SteeringWheelSpeed
+	{29, "BatteryCapacity", "电池容量", "Battery Capacity", "sensor", "energy_storage", "kWh", 1},
+	{30, "SteeringAngle", "方向盘转角", "Steering Wheel Angle", "sensor", "", "°", 1},
+	{31, "SteeringRotationSpeed", "方向盘转速", "Steering Wheel Speed", "sensor", "", "rpm", 1},
 	{32, "TotalPowerConsumption", "总电耗", "Total Power Consumption", "sensor", "energy", "kWh", 1},
 	{33, "BatteryPercentage", "电量百分比", "Battery Percentage", "sensor", "battery", "%", 1},
 	{34, "FuelPercentage", "油量百分比", "Fuel Percentage", "sensor", "battery", "%", 1},
@@ -226,7 +227,7 @@ var AllSensors = []SensorDefinition{
 	{36, "LaneLineCurvature", "车道线曲率", "Lane Line Curvature", "sensor", "", "", 1},
 	{37, "RightLaneDistance", "右侧线距离", "Right Lane Distance", "sensor", "", "", 1},
 	{38, "LeftLaneDistance", "左侧线距离", "Left Lane Distance", "sensor", "", "", 1},
-	{39, "BatteryVoltage12V", "蓄电池电压", "Battery Voltage 12V", "sensor", "", "", 1}, // seems to be 0 all the time?
+	{39, "BatteryVoltage12V", "蓄电池电压", "Battery Voltage 12V", "sensor", "", "", 1},
 	{40, "RadarLeftFront", "雷达左前", "Radar Left Front", "sensor", "distance", "m", 1},
 	{41, "RadarRightFront", "雷达右前", "Radar Right Front", "sensor", "distance", "m", 1},
 	{42, "RadarLeftRear", "雷达左后", "Radar Left Rear", "sensor", "distance", "m", 1},
@@ -237,7 +238,7 @@ var AllSensors = []SensorDefinition{
 	{47, "RadarCenterRear", "雷达中后", "Radar Center Rear", "sensor", "distance", "m", 1},
 	{48, "FrontWiperSpeed", "前雨刮速度", "Front Wiper Speed", "sensor", "", "", 1},
 	{49, "WiperGear", "雨刮档位", "Wiper Gear", "sensor", "", "", 1},
-	{50, "CruiseSwitch", "巡航开关", "Cruise Switch", "sensor", "", "", 1},
+	{50, "CruiseSwitch", "巡航开关", "Cruise Switch", "binary_sensor", "", "", 1},
 	{51, "DistanceToVehicleAhead", "前车距离", "Distance To The Vehicle Ahead", "sensor", "distance", "m", 1},
 	{52, "ChargingStatus", "充电状态", "Charging Status", "sensor", "", "", 1},
 	{53, "LeftFrontTirePressure", "左前轮气压", "Left Front Tire Pressure", "sensor", "pressure", "bar", 0.01},
@@ -248,23 +249,23 @@ var AllSensors = []SensorDefinition{
 	{58, "RightTurnSignal", "右转向灯", "Right Turn Signal", "binary_sensor", "light", "", 1},
 	{59, "DriverDoorLock", "主驾车门锁", "Driver Door Lock", "binary_sensor", "lock", "", 1},
 	// what is ID 60? not documeneted in the spec.
-	{61, "DriverWindowOpenPercent", "主驾车窗打开百分比", "Driver Window Open Percentage", "sensor", "", "%", 1}, // Was DriverWindowOpenPercentage
-	{62, "PassengerWindowOpenPercent", "副驾车窗打开百分比", "Passenger Window Open Percentage", "sensor", "", "%", 1}, // Was PassengerWindowOpenPercentage
-	{63, "LeftRearWindowOpenPercent", "左后车窗打开百分比", "Left Rear Window Open Percentage", "sensor", "", "%", 1}, // Fixed typo Lear -> Rear and name
-	{64, "RightRearWindowOpenPercent", "右后车窗打开百分比", "Right Rear Window Open Percentage", "sensor", "", "%", 1}, // Was RightRearWindowOpenPercentage
-	{65, "SunroofOpenPercent", "天窗打开百分比", "Sunroof Open Percentage", "sensor", "", "%", 1}, // Was SunroofOpenPercentage
-	{66, "SunshadeOpenPercent", "遮阳帘打开百分比", "Sunshade Open Percentage", "sensor", "", "%", 1}, // Was SunshadeOpenPercentage
+	{61, "DriverWindowOpenPercent", "主驾车窗打开百分比", "Driver Window Open Percentage", "sensor", "", "%", 1},
+	{62, "PassengerWindowOpenPercent", "副驾车窗打开百分比", "Passenger Window Open Percentage", "sensor", "", "%", 1},
+	{63, "LeftRearWindowOpenPercent", "左后车窗打开百分比", "Left Rear Window Open Percentage", "sensor", "", "%", 1},
+	{64, "RightRearWindowOpenPercent", "右后车窗打开百分比", "Right Rear Window Open Percentage", "sensor", "", "%", 1},
+	{65, "SunroofOpenPercent", "天窗打开百分比", "Sunroof Open Percentage", "sensor", "", "%", 1},
+	{66, "SunshadeOpenPercent", "遮阳帘打开百分比", "Sunshade Open Percentage", "sensor", "", "%", 1},
 	{67, "VehicleOperatingMode", "整车工作模式", "Vehicle Working Mode", "sensor", "", "", 1},
 	{68, "VehicleRunningMode", "整车运行模式", "Vehicle Operation Mode", "sensor", "", "", 1},
 	{69, "Month", "月", "Month", "sensor", "", "", 1},
 	{70, "Day", "日", "Day", "sensor", "", "", 1},
 	{71, "Hour", "时", "Hour", "sensor", "", "", 1},
-	{72, "Minute", "分", "Minute", "sensor", "", "", 1}, // Fixed: was labeled Year but described as Minutes
-	{73, "PassengerSeatBeltWarn", "副驾安全带警告", "Passenger Seat Belt Warning", "sensor", "", "", 1},
-	{74, "Row2LeftSeatbelt", "二排左安全带", "Second Row Left Seat Belt", "sensor", "", "", 1}, // Was SecondRowLeftSeatBelt
-	{75, "Row2RightSeatbelt", "二排右安全带", "Second Row Right Seat Belt", "sensor", "", "", 1}, // Was SecondRowRightSeatBelt
-	{76, "Row2CenterSeatbelt", "二排中安全带", "Second Row Center Seat Belt", "sensor", "", "", 1}, // Was Second Row Center Seat Belt (contained space)
-	{77, "ACStatus", "空调状态", "AC Status", "sensor", "", "", 1},
+	{72, "Minute", "分", "Minute", "sensor", "", "", 1},
+	{73, "PassengerSeatBeltWarn", "副驾安全带警告", "Passenger Seat Belt Warning", "binary_sensor", "safety", "", 1},
+	{74, "Row2LeftSeatbelt", "二排左安全带", "Second Row Left Seat Belt", "binary_sensor", "safety", "", 1},
+	{75, "Row2RightSeatbelt", "二排右安全带", "Second Row Right Seat Belt", "binary_sensor", "safety", "", 1},
+	{76, "Row2CenterSeatbelt", "二排中安全带", "Second Row Center Seat Belt", "binary_sensor", "safety", "", 1},
+	{77, "ACStatus", "空调状态", "AC Status", "binary_sensor", "running", "", 1},
 	{78, "FanSpeedLevel", "风量档位", "Fan Speed Level", "sensor", "", "", 1},
 	{79, "ACCirculationMode", "空调循环方式", "AC Circulation Mode", "sensor", "", "", 1},
 	{80, "ACBlowingMode", "空调出风模式", "AC Blowing Mode", "sensor", "", "", 1},
@@ -273,13 +274,13 @@ var AllSensors = []SensorDefinition{
 	{83, "LeftRearDoor", "左后车门", "Left Rear Door", "binary_sensor", "door", "", 1},
 	{84, "RightRearDoor", "右后车门", "Right Rear Door", "binary_sensor", "door", "", 1},
 	{85, "Hood", "引擎盖", "Hood", "binary_sensor", "opening", "", 1},
-	{86, "TrunkDoor", "后备箱门", "Trunk", "binary_sensor", "opening", "", 1}, // Was Trunk (struct field is TrunkDoor)
+	{86, "TrunkDoor", "后备箱门", "Trunk", "binary_sensor", "opening", "", 1},
 	{87, "FuelTankCap", "油箱盖", "Fuel Tank Cap", "binary_sensor", "opening", "", 1},
-	{88, "AutomaticParking", "自动驻车", "Automatic Parking", "sensor", "", "", 1},
-	{89, "ACCCruiseStatus", "ACC巡航状态", "ACC Cruise Status", "sensor", "", "", 1},
-	{90, "RearLeftProximityAlert", "左后接近告警", "Left Rear Approach Warning", "sensor", "", "", 1}, // Was LeftRearApproachWarning
-	{91, "RearRightProximityAlert", "右后接近告警", "Right Rear Approach Warning", "sensor", "", "", 1}, // Was RightRearApproachWarning
-	{92, "LaneKeepAssistStatus", "车道保持状态", "Lane Keeping Status", "sensor", "", "", 1}, // Was Lane Keeping Status (contained space)
+	{88, "AutomaticParking", "自动驻车", "Automatic Parking", "binary_sensor", "running", "", 1},
+	{89, "ACCCruiseStatus", "ACC巡航状态", "ACC Cruise Status", "binary_sensor", "moving", "", 1},
+	{90, "RearLeftProximityAlert", "左后接近告警", "Left Rear Approach Warning", "binary_sensor", "safety", "", 1},
+	{91, "RearRightProximityAlert", "右后接近告警", "Right Rear Approach Warning", "binary_sensor", "safety", "", 1},
+	{92, "LaneKeepAssistStatus", "车道保持状态", "Lane Keeping Status", "binary_sensor", "running", "", 1},
 	{93, "LeftRearDoorLock", "左后车门锁", "Left Rear Door Lock", "binary_sensor", "lock", "", 1},
 	{94, "PassengerDoorLock", "副驾车门锁", "Passenger Door Lock", "binary_sensor", "lock", "", 1},
 	{95, "RightRearDoorLock", "右后车门锁", "Right Rear Door Lock", "binary_sensor", "lock", "", 1},
@@ -288,7 +289,7 @@ var AllSensors = []SensorDefinition{
 	{98, "RightRearChildLock", "右后儿童锁", "Right Rear Child Lock", "binary_sensor", "lock", "", 1},
 	{99, "ParkingLights", "小灯", "Parking Lights", "binary_sensor", "light", "", 1},
 	{100, "LowBeamLights", "近光灯", "Low Beam", "binary_sensor", "light", "", 1},
-	{101, "HighBeamLights", "远光灯", "High Beam", "binary_sensor", "light", "", 1},
+	{101, "HighBeamLights", "远光灯", "High Beam", "binary_sensor", "", "", 1},
 	// what is ID 102 and 103? not documeneted in the spec.
 	{104, "FrontFogLamp", "前雾灯", "Front Fog Lamp", "binary_sensor", "light", "", 1},
 	{105, "RearFogLamp", "后雾灯", "Rear Fog Lamp", "binary_sensor", "light", "", 1},
@@ -297,15 +298,15 @@ var AllSensors = []SensorDefinition{
 	{108, "EngineWaterTemperature", "发动机水温", "Engine Water Temperature", "sensor", "", "°C", 1},
 	{109, "HazardLights", "双闪", "Hazard Lights", "binary_sensor", "light", "", 1},
 
-	{1001, "SurroundViewStatus", "全景状态", "Panorama Status", "sensor", "", "", 1}, // Fixed FieldName and Name
-	{1002, "UIConfigVersion", "配置UI版本", "Configuration UI Version", "sensor", "", "", 1}, // Fixed Name
-	{1003, "SentryModeStatus", "哨兵状态", "Sentry Status", "binary_sensor", "safety", "", 1}, // Fixed FieldName and Name
-	{1004, "PowerOffRecordingConfig", "熄火录像配置开关", "Recording Configuration Switch", "binary_sensor", "power", "", 1}, // Fixed FieldName and Name
-	{1006, "PowerOffSentryAlarm", "熄火哨兵报警", "Sentry Alarm", "binary_sensor", "problem", "", 1}, // Fixed FieldName and Name
-	{1007, "WiFiStatus", "WIFI状态", "WIFI Status", "binary_sensor", "connectivity", "", 1}, // Fixed Name
-	{1008, "BluetoothStatus", "蓝牙状态", "Bluetooth Status", "binary_sensor", "connectivity", "", 1}, // Fixed Name
-	{1009, "BluetoothSignalStrength", "蓝牙信号强度", "Bluetooth Signal Strength", "sensor", "signal_strength", "dBm", 1}, // Fixed Name
-	{1101, "WirelessADBSwitch", "无线ADB开关", "Wireless ADB Switch", "binary_sensor", "", "", 1}, // Fixed Name
+	{1001, "SurroundViewStatus", "全景状态", "Panorama Status", "binary_sensor", "running", "", 1},
+	{1002, "UIConfigVersion", "配置UI版本", "Configuration UI Version", "sensor", "", "", 1},
+	{1003, "SentryModeStatus", "哨兵状态", "Sentry Status", "binary_sensor", "safety", "", 1},
+	{1004, "PowerOffRecordingConfig", "熄火录像配置开关", "Recording Configuration Switch", "binary_sensor", "power", "", 1},
+	{1006, "PowerOffSentryAlarm", "熄火哨兵报警", "Sentry Alarm", "binary_sensor", "safety", "", 1},
+	{1007, "WiFiStatus", "WIFI状态", "WIFI Status", "binary_sensor", "connectivity", "", 1},
+	{1008, "BluetoothStatus", "蓝牙状态", "Bluetooth Status", "binary_sensor", "connectivity", "", 1},
+	{1009, "BluetoothSignalStrength", "蓝牙信号强度", "Bluetooth Signal Strength", "sensor", "signal_strength", "dBm", 1},
+	{1101, "WirelessADBSwitch", "无线ADB开关", "Wireless ADB Switch", "binary_sensor", "switch", "", 1},
 
 	{2001, "AIPersonConfidence", "AI识别人可信度", "AI Person Confidence", "sensor", "", "", 1},
 	{2002, "AIVehicleConfidence", "AI识别车可信度", "AI Vehicle Confidence", "sensor", "", "", 1},
@@ -313,7 +314,7 @@ var AllSensors = []SensorDefinition{
 	{2004, "LastSentryTriggerImage", "上次哨兵触发画面", "Last Sentry Trigger Image", "sensor", "", "", 1},
 	{2005, "LastVideoStartTime", "上次录像文件开始时间", "Last Video Start Time", "sensor", "timestamp", "", 1},
 	{2006, "LastVideoEndTime", "上次录像文件结束时间", "Last Video End Time", "sensor", "timestamp", "", 1},
-	{2007, "LastVideoPath", "上次录像路径", "Last Video Path", "sensor", "", "", 1}, // Removed trailing dot in FieldName/EnglishName
+	{2007, "LastVideoPath", "上次录像路径", "Last Video Path", "sensor", "", "", 1},
 }
 
 // GetSensorByID returns a sensor definition by its ID
@@ -333,7 +334,7 @@ func GetScaleFactor(jsonKey string) float64 {
 	for _, s := range AllSensors {
 		if ToSnakeCase(s.FieldName) == jsonKey {
 			if s.ScaleFactor != 0 {
-				factor = s.ScaleFactor // keep updating; last match wins
+				factor = s.ScaleFactor
 			}
 		}
 	}
